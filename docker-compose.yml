@@ -1,0 +1,25 @@
+version: "3"
+
+services:
+
+    mongo:
+      image: mongo:3.6
+      volumes:
+        - ./db:/data/db
+      restart: always
+
+    php-fpm:
+      build: ./docker/php-fpm
+      volumes:
+        - ./src:/var/www/example/
+
+    webapp:
+      depends_on:
+        - mongo
+        - php-fpm
+      build: ./docker/nginx
+      ports:
+        - 8888:80
+      restart: always
+      volumes:
+        - ./src:/var/www/example/
